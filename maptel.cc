@@ -102,8 +102,10 @@ void maptel_erase(unsigned long id, char const *tel_src) {
 		std::cerr << "maptel: maptel_erase(" << id << ", " << tel_src_str << ")\n";
 	}
 
-
-
+    if (phone_map.find(id) == phone_map.end())
+	    std::cerr << "maptel with id: " <<id <<" does not exist";
+    else
+        phone_map[id].erase(tel_src_str);
 
 
 	if (debug) {
