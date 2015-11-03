@@ -85,10 +85,10 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
 	//wydaje mi sie ze nawet w wersji release powinnismy poinformowac uzytkownika jak
 	//uzywa niesyniejacej mapy
 	if (phone_map.find(id) == phone_map.end())
-	    std::err << "maptel with id: " <<id <<" does not exist";
+	    std::cerr << "maptel with id: " <<id <<" does not exist";
     //w elsie mozna by dodac jakies asserty, ale to chyba byloby testowanie stla
     else
-        phone_map[id].insert(tel_src_str, tel_dst_str);
+        phone_map[id].emplace(tel_src_str, tel_dst_str);
 
 	if (debug) {
 		std::cerr << "maptel: maptel_insert: inserted\n";
