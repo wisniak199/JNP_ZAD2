@@ -1,4 +1,5 @@
 /*
+  Kompilacja: g++ -o maptel maptel.cc -std=c++11 -Wall -pedantic
   Notki dla ciebie:
   Trzeba jeszcze wpasc na pomysl jak reprezentowac zmiany. imo dobra opcja
   bylby vector z push_backiem i ogolnie map<int, vector<string>>. Czy jakos
@@ -7,6 +8,9 @@
   Wykrywanie cyklu da rade zrobic liniowo (z pamiecia stala)
   Trzeba bedzie jeszcze ogarnac "te rzeczy" w zwiazku z C. Sam kod raczej
   nie jest trudny
+  
+  uwagi:
+  dodac jakies typedefy? przykladowo na unordered_map
 */
 
 #include <iostream>
@@ -20,7 +24,9 @@
     const bool debug = false;
 #endif
 
-static std::unordered_map<unsigned long, std::string> phone_map;
+typedef std::unordered_map<std::string, std::string> mapvalue;
+
+static std::unordered_map<unsigned long, mapvalue> phone_map;
 
 
 
@@ -32,7 +38,8 @@ unsigned long maptel_create() {
 		assert(phone_map.find(counter) == phone_map.end());
 	}
 
-	phone_map.insert( std::pair<unsigned long, std::string>(counter, "") );
+	
+	phone_map.insert(std::pair<unsigned long, mapvalue> (counter, mapvalue()));
     
 	if (debug) {
 		std::cerr << "maptel: maptel_create: new map id = " << counter << '\n';
@@ -65,11 +72,14 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
 		std::cerr << "maptel: maptel_insert(" << id << ", " << tel_src_str
 		          << ", " << tel_dst_str << ")\n";
 		assert(phone_map.find(id) != phone_map.end());
+		assert(phone_map[id].find(tel_src_str) != phone_map[id].end());
 	}
 	
 	
 	
-	phone_map.insert(std::pair<unsigned long, std::string>(id, tel_dst));
+	
+	
+	//phone_map.insert(std::pair<unsigned long, std::string>(id, tel_dst));
 	
 	
 	
