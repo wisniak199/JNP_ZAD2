@@ -8,14 +8,14 @@
   PW: Nie trzeba robic zadnych vectorow. Wydaje mi sie, ze w zadaniu chodzi o to,
   ze w przypadku mapy ktora ma np:
   numer1 -> numer2; numer2 -> numer3; numer3 -> numer4
-  to wtedy mamy wpisac to tel_dst numer4 (jezeli pytamy o numer1)(tak samo 
+  to wtedy mamy wpisac to tel_dst numer4 (jezeli pytamy o numer1)(tak samo
   dla cykli)
 
-  
+
   Wykrywanie cyklu da rade zrobic liniowo (z pamiecia stala)
   Trzeba bedzie jeszcze ogarnac "te rzeczy" w zwiazku z C. Sam kod raczej
   nie jest trudny
-  
+
   uwagi:
   dodac jakies typedefy? przykladowo na unordered_map
 */
@@ -45,26 +45,26 @@ unsigned long maptel_create() {
 		assert(phone_map.find(counter) == phone_map.end());
 	}
 
-	
+
 	phone_map.insert(std::pair<unsigned long, mapvalue> (counter, mapvalue()));
-    
+
 	if (debug) {
 		std::cerr << "maptel: maptel_create: new map id = " << counter << '\n';
 		assert(phone_map.find(counter) != phone_map.end());
 	}
-	
+
 	return counter++;
 }
 
-// doned 
+// doned
 void maptel_delete(unsigned long id) {
 	if (debug) {
 		std::cerr << "maptel: maptel_delete(" << id << ")\n";
 		assert(phone_map.find(id) != phone_map.end());
 	}
-	
+
 	phone_map.erase(id);
-	
+
 	if (debug) {
 		std::cerr << "maptel: maptel_delete: map " << id << " deleted\n";
 		assert(phone_map.find(id) == phone_map.end());
@@ -81,15 +81,15 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
 		assert(phone_map.find(id) != phone_map.end());
 		assert(phone_map[id].find(tel_src_str) != phone_map[id].end());
 	}
-	
-	
-	
-	
-	
-	//phone_map.insert(std::pair<unsigned long, std::string>(id, tel_dst));
-	
-	
-	
+
+	//wydaje mi sie ze nawet w wersji release powinnismy poinformowac uzytkownika jak
+	//uzywa niesyniejacej mapy
+	if (phone_map.find(id) == phone_map.end())
+	    std::err << "maptel with id: " <<id <<" does not exist";
+    //w elsie mozna by dodac jakies asserty, ale to chyba byloby testowanie stla
+    else
+        phone_map[id].insert(tel_src_str, tel_dst_str);
+
 	if (debug) {
 		std::cerr << "maptel: maptel_insert: inserted\n";
 		// TODO: dodac jakas asercje
@@ -101,33 +101,33 @@ void maptel_erase(unsigned long id, char const *tel_src) {
 	if (debug) {
 		std::cerr << "maptel: maptel_erase(" << id << ", " << tel_src_str << ")\n";
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	if (debug) {
 		std::cerr << "maptel: maptel_erase: erased\n";
 	}
 }
 
-  
+
 void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size_t len) {
 	std::string tel_src_s(tel_src);
 	std::string tel_dst_s(tel_dst);
 	if (debug) {
 		std::cerr << "maptel: maptel_transform(" << id << ", " << tel_src_s
 		          << ", " << tel_dst << ", " << len << ")\n";
-		
+
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	if (debug) {
-		
+
 	}
 }
 
