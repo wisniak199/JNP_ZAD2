@@ -4,6 +4,13 @@
   Trzeba jeszcze wpasc na pomysl jak reprezentowac zmiany. imo dobra opcja
   bylby vector z push_backiem i ogolnie map<int, vector<string>>. Czy jakos
   inaczej?
+
+  PW: Nie trzeba robic zadnych vectorow. Wydaje mi sie, ze w zadaniu chodzi o to,
+  ze w przypadku mapy ktora ma np:
+  numer1 -> numer2; numer2 -> numer3; numer3 -> numer4
+  to wtedy mamy wpisac to tel_dst numer4 (jezeli pytamy o numer1)(tak samo 
+  dla cykli)
+
   
   Wykrywanie cyklu da rade zrobic liniowo (z pamiecia stala)
   Trzeba bedzie jeszcze ogarnac "te rzeczy" w zwiazku z C. Sam kod raczej
@@ -49,7 +56,7 @@ unsigned long maptel_create() {
 	return counter++;
 }
 
-// doned
+// doned 
 void maptel_delete(unsigned long id) {
 	if (debug) {
 		std::cerr << "maptel: maptel_delete(" << id << ")\n";
