@@ -86,9 +86,9 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
 	//uzywa niesyniejacej mapy
 	if (phone_map.find(id) == phone_map.end())
 	    std::cerr << "maptel with id: " <<id <<" does not exist";
-    //w elsie mozna by dodac jakies asserty, ale to chyba byloby testowanie stla
-    else
-        phone_map[id].emplace(tel_src_str, tel_dst_str);
+    	//w elsie mozna by dodac jakies asserty, ale to chyba byloby testowanie stla
+    	else
+        	phone_map[id].emplace(tel_src_str, tel_dst_str);
 
 	if (debug) {
 		std::cerr << "maptel: maptel_insert: inserted\n";
@@ -102,10 +102,10 @@ void maptel_erase(unsigned long id, char const *tel_src) {
 		std::cerr << "maptel: maptel_erase(" << id << ", " << tel_src_str << ")\n";
 	}
 
-    if (phone_map.find(id) == phone_map.end())
-	    std::cerr << "maptel with id: " <<id <<" does not exist";
-    else
-        phone_map[id].erase(tel_src_str);
+    	if (phone_map.find(id) == phone_map.end())
+	    	std::cerr << "maptel with id: " <<id <<" does not exist";
+    	else
+        	phone_map[id].erase(tel_src_str);
 
 
 	if (debug) {
