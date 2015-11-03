@@ -28,7 +28,7 @@ extern "C" {
     // przez tel_dst.
     void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size_t len);
 
-#ifdef __cplusplus\
+#ifdef __cplusplus
 }
 #endif
 #endif
