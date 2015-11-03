@@ -1,6 +1,8 @@
 #ifndef __MAPTEL_H__
 #define __MAPTEL_H__
 
+#include <stdio.h> // size_t
+
 #ifdef __cplusplus
 extern "C" {
 #endif
