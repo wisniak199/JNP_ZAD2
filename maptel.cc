@@ -39,7 +39,7 @@ static std::unordered_map<unsigned long, mapvalue> phone_map;
 
 // TODO: zamienic na obsluge usunietych indeksow
 unsigned long maptel_create() {
-    static unsigned long counter = 1;
+    static unsigned long counter = 0;
 	if (debug) {
 		std::cerr << "maptel: maptel_create()\n";
 		assert(phone_map.find(counter) == phone_map.end());
@@ -124,85 +124,85 @@ void copy_number(char *dst, std::string& number, size_t max_len)
     }
 }
 void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size_t len) {
-	std::string tel_src_s(tel_src);
+        std::string tel_src_s(tel_src);
 	if (debug) {
 		std::cerr << "maptel: maptel_transform(" << id << ", " << tel_src_s
 		          << ", " << tel_dst << ", " << len << ")\n";
 
 	}
-	if (phone_map.find(id) == phone_map.end())
+	
+        if (phone_map.find(id) == phone_map.end())
 	    std::cerr << "maptel woth id: " <<id <<" does not exist";
-    else {
-        mapvalue book = phone_map[id];
-        if (book.find(tel_src_s) == book.end()) {
-            copy_number(tel_dst, tel_src_s, len);
-        }
         else {
-            phone_change slow = book.find(tel_src_s);
-            phone_change fast = slow;
-            while(true) {
+            mapvalue book = phone_map[id];
+            if (book.find(tel_src_s) == book.end()) {
+                copy_number(tel_dst, tel_src_s, len);
+            }
+            else {
+                phone_change slow = book.find(tel_src_s);
+                phone_change fast = slow;
+                while(true) {
                 //wolnego przeuwamy o jeden i jak natrafimy na koniec no to brak cyklu
-                if (book.find(slow->second) != book.end())
-                    slow = book.find(slow->second);
-                else {
-                    //wpisz slow->second
-                    copy_number(tel_dst, slow->second, len);
-                    return;
-                }
-
-                //szybkiego przesuwamy o 2 i jak po drodze byl koniec to brak cyklu
-                if (book.find(fast->second) != book.end()) {
-                    fast = book.find(fast->second);
-                    if (book.find(fast->second) != book.end())
-                        fast = book.find(fast->second);
+                    if (book.find(slow->second) != book.end())
+                        slow = book.find(slow->second);
                     else {
-                        //wpisz fast->second
-                        copy_number(tel_dst, fast->second, len);
-                        return;
+                    //wpisz slow->second
+                        copy_number(tel_dst, slow->second, len);
+                        break;
                     }
 
-                }
-                else{
+                //szybkiego przesuwamy o 2 i jak po drodze byl koniec to brak cyklu
+                    if (book.find(fast->second) != book.end()) {
+                        fast = book.find(fast->second);
+                        if (book.find(fast->second) != book.end())
+                            fast = book.find(fast->second);
+                        else {
+                        //wpisz fast->second
+                            copy_number(tel_dst, fast->second, len);
+                            break;
+                        }
+                    } 
+                    else{
                     //wpisz slow->second
-                    copy_number(tel_dst, slow->second, len);
-                    return;
-                }
+                        copy_number(tel_dst, slow->second, len);
+                        break;
+                    }
 
-                //czyli mamy cykl
-                if (slow == fast) {
+                    //czyli mamy cykl
+                    if (slow == fast) {
                     //wpisz tel_src
-                    copy_number(tel_dst, tel_src_s, len);
-                    return;
+                        copy_number(tel_dst, tel_src_s, len);
+                        if (debug)
+                            std::cerr << "maptel: maptel_transform: cycle detected\n";
+                        break;
+                    }
                 }
             }
+	    if (debug) {
+                std::cerr << "maptel: maptel_transform: " << tel_src_s <<" -> "
+                        << std::string(tel_dst) <<"\n";
+
+	    }
         }
-    }
-
-
-
-
-
-
-	if (debug) {
-
-	}
 }
 
 
-int main() {
+/*int main() {
 	//std::cout << "hello world";
 	char *tel1 = "1";
 	char *tel2 = "2";
 	char *tel3 = "3";
 	char *tel4 = "4";
 	char *tel5 = "5";
+	char *tel6 = "6";
 	unsigned long i = maptel_create();
 	maptel_insert(i, tel1, tel2);
 	maptel_insert(i, tel2, tel3);
 	maptel_insert(i, tel3, tel2);
 	maptel_insert(i, tel4, tel5);
+	maptel_insert(i, tel5, tel6);
 	char t[4];
-	maptel_transform(i,tel3, t, 4);
+	maptel_transform(i,tel4, t, 4);
 	printf("%s", t);
     return 0;
-}
+}*/
