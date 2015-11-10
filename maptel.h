@@ -1,7 +1,11 @@
 #ifndef __MAPTEL_H__
 #define __MAPTEL_H__
 
-#include <stdio.h> // size_t
+#ifdef __cplusplus
+#include <iostream> // size_t
+#else
+#include <stdio.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,4 +37,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
+#endif /* __MAPTEL_H__ */

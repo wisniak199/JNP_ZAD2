@@ -1,3 +1,9 @@
+#ifndef __CMAPTEL__
+#define __CMAPTEL__
+#include <iostream>
 namespace jnp1 {
-#include "maptel.h"
+    extern "C" {
+        #include "maptel.h"
+    }
 }
+#endif /* __CMAPTEL__ */
