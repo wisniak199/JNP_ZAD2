@@ -33,8 +33,13 @@
 
 typedef std::unordered_map<std::string, std::string> mapvalue;
 typedef std::unordered_map<std::string, std::string>::iterator phone_change;
-static std::unordered_map<unsigned long, mapvalue> phone_map;
+static std::unordered_map<unsigned long, mapvalue> phone_book_map;
 
+phone_book_map&  phone_map()
+{
+     static phone_book_map* ans = new phone_book_map();
+     return ans;
+}
 
 
 // TODO: zamienic na obsluge usunietych indeksow
