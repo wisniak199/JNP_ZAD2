@@ -2,9 +2,9 @@
 #define __MAPTEL_H__
 
 #ifdef __cplusplus
-#include <iostream> // size_t
+#include <cstddef> // size_t
 #else
-#include <stdio.h>
+#include <stddef.h>
 #endif
 
 #ifdef __cplusplus

@@ -47,15 +47,15 @@ unsigned long maptel_create() {
     static unsigned long counter = 0;
 	if (debug) {
 		std::cerr << "maptel: maptel_create()\n";
-		assert(phone_map.find(counter) == phone_map.end());
+		assert(phone_map().find(counter) == phone_map().end());
 	}
 
 
-	phone_map.insert(std::pair<unsigned long, mapvalue> (counter, mapvalue()));
+	phone_map().insert(std::pair<unsigned long, mapvalue> (counter, mapvalue()));
 
 	if (debug) {
 		std::cerr << "maptel: maptel_create: new map id = " << counter << '\n';
-		assert(phone_map.find(counter) != phone_map.end());
+		assert(phone_map().find(counter) != phone_map().end());
 	}
 
 	return counter++;
@@ -65,14 +65,14 @@ unsigned long maptel_create() {
 void maptel_delete(unsigned long id) {
 	if (debug) {
 		std::cerr << "maptel: maptel_delete(" << id << ")\n";
-		assert(phone_map.find(id) != phone_map.end());
+		assert(phone_map().find(id) != phone_map().end());
 	}
 
-	phone_map.erase(id);
+	phone_map().erase(id);
 
 	if (debug) {
 		std::cerr << "maptel: maptel_delete: map " << id << " deleted\n";
-		assert(phone_map.find(id) == phone_map.end());
+		assert(phone_map().find(id) == phone_map().end());
 	}
 }
 
@@ -83,17 +83,17 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
 	if (debug) {
 		std::cerr << "maptel: maptel_insert(" << id << ", " << tel_src_str
 		          << ", " << tel_dst_str << ")\n";
-		assert(phone_map.find(id) != phone_map.end());
-		//assert(phone_map[id].find(tel_src_str) != phone_map[id].end());
+		assert(phone_map().find(id) != phone_map().end());
+		//assert(phone_map()[id].find(tel_src_str) != phone_map()[id].end());
 	}
 
 	//wydaje mi sie ze nawet w wersji release powinnismy poinformowac uzytkownika jak
 	//uzywa niesyniejacej mapy
-	if (phone_map.find(id) == phone_map.end())
+	if (phone_map().find(id) == phone_map().end())
 	    std::cerr << "maptel with id: " <<id <<" does not exist";
     	//w elsie mozna by dodac jakies asserty, ale to chyba byloby testowanie stla
     else
-        phone_map[id].emplace(tel_src_str, tel_dst_str);
+        phone_map()[id].emplace(tel_src_str, tel_dst_str);
 
 	if (debug) {
 		std::cerr << "maptel: maptel_insert: inserted\n";
@@ -107,10 +107,10 @@ void maptel_erase(unsigned long id, char const *tel_src) {
 		std::cerr << "maptel: maptel_erase(" << id << ", " << tel_src_str << ")\n";
 	}
 
-    if (phone_map.find(id) == phone_map.end())
+    if (phone_map().find(id) == phone_map().end())
         std::cerr << "maptel with id: " <<id <<" does not exist";
     else
-        phone_map[id].erase(tel_src_str);
+        phone_map()[id].erase(tel_src_str);
 
 
 	if (debug) {
@@ -135,11 +135,11 @@ void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size
 		          << ", " << tel_dst << ", " << len << ")\n";
 
 	}
-	
-        if (phone_map.find(id) == phone_map.end())
+
+        if (phone_map().find(id) == phone_map().end())
 	    std::cerr << "maptel woth id: " <<id <<" does not exist";
         else {
-            mapvalue book = phone_map[id];
+            mapvalue book = phone_map()[id];
             if (book.find(tel_src_s) == book.end()) {
                 copy_number(tel_dst, tel_src_s, len);
             }
@@ -166,7 +166,7 @@ void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size
                             copy_number(tel_dst, fast->second, len);
                             break;
                         }
-                    } 
+                    }
                     else{
                     //wpisz slow->second
                         copy_number(tel_dst, slow->second, len);
