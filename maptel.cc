@@ -132,7 +132,7 @@ void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size
         std::string tel_src_s(tel_src);
     if (debug) {
         std::cerr << "maptel: maptel_transform(" << id << ", " << tel_src_s
-                  << ", " << tel_dst << ", " << len << ")\n";
+                  << ", " << static_cast<void*>(tel_dst) << ", " << len << ")\n";
 
     }
 
