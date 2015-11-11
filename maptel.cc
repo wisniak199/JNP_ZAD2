@@ -25,44 +25,44 @@ namespace {
         const bool debug = false;
     #endif
 
-	// Typedefy - czyli przepisanie długiej ilości kodu jako pojedyńcze słowo
-	// mapvalue oznacza "wartosc" w mapie ze wszystkimi telefonami.
+    // Typedefy - czyli przepisanie długiej ilości kodu jako pojedyńcze słowo
+    // mapvalue oznacza "wartosc" w mapie ze wszystkimi telefonami.
     typedef std::unordered_map<std::string, std::string> mapvalue;
-	// phone_change - wykorzystany do maptel_transform do iteracji.
+    // phone_change - wykorzystany do maptel_transform do iteracji.
     typedef std::unordered_map<std::string, std::string>::iterator phone_change;
     // phone_book_map - mapa ze wszystkimi telefonami, utworzona w anonimowym
-	//                  namespace.
-	typedef std::unordered_map<unsigned long, mapvalue> phone_book_map;
+    //                  namespace.
+    typedef std::unordered_map<unsigned long, mapvalue> phone_book_map;
 
     phone_book_map&  phone_map()
     {
         static phone_book_map ans = phone_book_map();
         return ans;
     }
-	
-	void copy_number(char *dst, std::string& number, size_t max_len)
-	{
-		size_t l = number.length();
-		if (l + 1> max_len) //potrzebujemy tez miejsca na nulla
-		std::cerr << "not enough memory allocated";
-		else {
-			number.copy(dst, l);
-			dst[l] = '\0';
-		}
-	}
-	
-	bool is_valid_number(std::string number){
-		size_t n = number.size();
+    
+    void copy_number(char *dst, std::string& number, size_t max_len)
+    {
+        size_t l = number.length();
+        if (l + 1> max_len) //potrzebujemy tez miejsca na nulla
+            std::cerr << "not enough memory allocated";
+        else {
+            number.copy(dst, l);
+            dst[l] = '\0';
+        }
+    }
+    
+    bool is_valid_number(std::string number){
+        size_t n = number.size();
 
-		if (n>=TEL_NUM_MAX_LEN)
-			return false;
+        if (n>=TEL_NUM_MAX_LEN)
+            return false;
 
-		for (size_t i=0; i!=n; ++i)
-			if (!std::isdigit(number[i]))
-				return false;
-		
-		return true;
-	}
+        for (size_t i=0; i!=n; ++i)
+            if (!std::isdigit(number[i]))
+                return false;
+        
+        return true;
+    }
 }
 
 
@@ -142,12 +142,12 @@ void maptel_erase(unsigned long id, char const *tel_src) {
 
 // Nie jestem pewien, czy sprawdzać poprawność numeru w sekcji debug, czy poza.
 void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size_t len) {
-	std::string tel_src_s(tel_src);
+    std::string tel_src_s(tel_src);
     if (debug) {
         std::cerr << "maptel: maptel_transform(" << id << ", " << tel_src_s
                   << ", " << static_cast<void*>(tel_dst) << ", " << len << ")\n";
-		assert(phone_map().find(id) != phone_map().end());
-		assert(is_valid_number(tel_src_s));
+        assert(phone_map().find(id) != phone_map().end());
+        assert(is_valid_number(tel_src_s));
     }
 
     if (phone_map().find(id) == phone_map().end())
@@ -161,8 +161,8 @@ void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size
             phone_change slow = book.find(tel_src_s);
             phone_change fast = slow;
             
-			// Wykrywanie cyklu z uzyciem metody "krolika i zolwia"
-			while(true) {
+            // Wykrywanie cyklu z uzyciem metody "krolika i zolwia"
+            while(true) {
                 //wolnego przeuwamy o jeden i jak natrafimy na koniec no to brak cyklu
                 if (book.find(slow->second) != book.end())
                     slow = book.find(slow->second);
