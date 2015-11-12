@@ -53,15 +53,25 @@ namespace {
     
     bool is_valid_number(std::string number){
         size_t n = number.size();
-
+        bool b;
         if (n>=TEL_NUM_MAX_LEN)
-            return false;
+            b = false;
 
         for (size_t i=0; i!=n; ++i)
             if (!std::isdigit(number[i]))
-                return false;
+                b =  false;
         
-        return true;
+        b = true;
+        if (!b)
+            std::cerr << "invalid number: " << number <<"\n";
+        return b;
+    }
+
+    bool is_valid_map(unsigned long id){
+        bool b =  phone_map().find(id) != phone_map().end();
+        if (!b)
+            std::cerr << "map with id: " <<id <<" does not exist\n";
+        return b;
     }
 }
 
@@ -89,6 +99,8 @@ void maptel_delete(unsigned long id) {
         std::cerr << "maptel: maptel_delete(" << id << ")\n";
         assert(phone_map().find(id) != phone_map().end());
     }
+    if (!is_valid_map(id))
+        return;
 
     phone_map().erase(id);
 
@@ -107,15 +119,14 @@ void maptel_insert(unsigned long id, char const *tel_src, char const *tel_dst) {
                   << ", " << tel_dst_str << ")\n";
     }
 
-    //mapa nie istnieje
-    if (phone_map().find(id) == phone_map().end())
-        std::cerr << "maptel with id: " <<id <<" does not exist\n";
-    else {
-        phone_map()[id].emplace(tel_src_str, tel_dst_str);
-        if (debug) {
-            std::cerr << "maptel: maptel_insert: inserted\n";
-            assert(phone_map()[id].find(tel_src) != phone_map()[id].end());
-        }
+    if (!is_valid_map(id) || !is_valid_number(tel_src_str) || !is_valid_number(tel_dst_str))
+        return;
+        
+    phone_map()[id].emplace(tel_src_str, tel_dst_str);
+    
+    if (debug) {
+        std::cerr << "maptel: maptel_insert: inserted\n";
+        assert(phone_map()[id].find(tel_src) != phone_map()[id].end());
     }
 }
 
@@ -126,81 +137,77 @@ void maptel_erase(unsigned long id, char const *tel_src) {
         std::cerr << "maptel: maptel_erase(" << id << ", " << tel_src_str << ")\n";
     }
 
-    if (phone_map().find(id) == phone_map().end())
-        std::cerr << "maptel with id: " <<id <<" does not exist";
-    else {
-        if (phone_map()[id].erase(tel_src_str)) {
-            if (debug)
-                std::cerr << "maptel: maptel_erase: erased\n";
-        } else {
-            if (debug)
-                std::cerr << "maptel: maptel_erase: nothing to erase\n";
-        }
+    if (!is_valid_map(id) || !is_valid_number(tel_src_str))
+        return;
+    
+    if (phone_map()[id].erase(tel_src_str)) {
+        if (debug)
+            std::cerr << "maptel: maptel_erase: erased\n";
+    } else {
+        if (debug)
+            std::cerr << "maptel: maptel_erase: nothing to erase\n";
     }
 }
 
 
-// Nie jestem pewien, czy sprawdzać poprawność numeru w sekcji debug, czy poza.
 void maptel_transform(unsigned long id, char const *tel_src, char *tel_dst, size_t len) {
     std::string tel_src_s(tel_src);
     if (debug) {
         std::cerr << "maptel: maptel_transform(" << id << ", " << tel_src_s
                   << ", " << static_cast<void*>(tel_dst) << ", " << len << ")\n";
-        assert(phone_map().find(id) != phone_map().end());
-        assert(is_valid_number(tel_src_s));
     }
 
-    if (phone_map().find(id) == phone_map().end())
-        std::cerr << "maptel with id: " << id <<" does not exist";
+    if (!is_valid_map(id) || !is_valid_number(tel_src_s))
+        return;
+    
+    mapvalue book = phone_map()[id];
+    if (book.find(tel_src_s) == book.end()) {
+        copy_number(tel_dst, tel_src_s, len);
+    }
     else {
-        mapvalue book = phone_map()[id];
-        if (book.find(tel_src_s) == book.end()) {
-            copy_number(tel_dst, tel_src_s, len);
-        }
-        else {
-            phone_change slow = book.find(tel_src_s);
-            phone_change fast = slow;
+        phone_change slow = book.find(tel_src_s);
+        phone_change fast = slow;
             
-            // Wykrywanie cyklu z uzyciem metody "krolika i zolwia"
-            while(true) {
-                //wolnego przeuwamy o jeden i jak natrafimy na koniec no to brak cyklu
-                if (book.find(slow->second) != book.end())
-                    slow = book.find(slow->second);
-                else {
-                    //wpisz slow->second
-                    copy_number(tel_dst, slow->second, len);
-                    break;
-                }
-                //szybkiego przesuwamy o 2 i jak po drodze byl koniec to brak cyklu
-                if (book.find(fast->second) != book.end()) {
+        // Wykrywanie cyklu z uzyciem metody "krolika i zolwia"
+        while(true) {
+            //wolnego przeuwamy o jeden i jak natrafimy na koniec no to brak cyklu
+            if (book.find(slow->second) != book.end())
+                slow = book.find(slow->second);
+            else {
+                //wpisz slow->second
+                copy_number(tel_dst, slow->second, len);
+                break;
+            }
+            //szybkiego przesuwamy o 2 i jak po drodze byl koniec to brak cyklu
+            if (book.find(fast->second) != book.end()) {
+                fast = book.find(fast->second);
+                if (book.find(fast->second) != book.end())
                     fast = book.find(fast->second);
-                    if (book.find(fast->second) != book.end())
-                        fast = book.find(fast->second);
-                    else {
-                        //wpisz fast->second
-                        copy_number(tel_dst, fast->second, len);
-                        break;
-                    }
-                }
-                else{
-                    //wpisz slow->second
-                    copy_number(tel_dst, slow->second, len);
+                else {
+                    //wpisz fast->second
+                    copy_number(tel_dst, fast->second, len);
                     break;
                 }
+            }
+            else{
+                //wpisz slow->second
+                copy_number(tel_dst, slow->second, len);
+                break;
+            }
 
-                //czyli mamy cykl
-                if (slow == fast) {
-                    //wpisz tel_src
-                    copy_number(tel_dst, tel_src_s, len);
-                    if (debug)
-                        std::cerr << "maptel: maptel_transform: cycle detected\n";
-                    break;
-                }
-            } //end while
-        } //end else
-        if (debug) {
-            std::cerr << "maptel: maptel_transform: " << tel_src_s <<" -> "
-                      << std::string(tel_dst) <<", \n";
-        }
+            //czyli mamy cykl
+            if (slow == fast) {
+                //wpisz tel_src
+                copy_number(tel_dst, tel_src_s, len);
+                if (debug)
+                    std::cerr << "maptel: maptel_transform: cycle detected\n";
+                break;
+            }
+        } //end while
+    }
+        
+    if (debug) {
+        std::cerr << "maptel: maptel_transform: " << tel_src_s <<" -> "
+                << std::string(tel_dst) <<", \n";
     }
 }
