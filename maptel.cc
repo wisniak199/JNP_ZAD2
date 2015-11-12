@@ -53,15 +53,14 @@ namespace {
     
     bool is_valid_number(std::string number){
         size_t n = number.size();
-        bool b;
+        bool b = true;
         if (n>=TEL_NUM_MAX_LEN)
             b = false;
-
-        for (size_t i=0; i!=n; ++i)
-            if (!std::isdigit(number[i]))
-                b =  false;
-        
-        b = true;
+        else {
+            for (size_t i=0; i!=n; ++i)
+                if (!std::isdigit(number[i]))
+                    b =  false;
+        }
         if (!b)
             std::cerr << "invalid number: " << number <<"\n";
         return b;
